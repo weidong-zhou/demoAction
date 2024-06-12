@@ -8,6 +8,10 @@
 
 name: Upload Python Package
 
+env:
+  APP_NAME: hello
+  APP_VERSION: 0.1.0
+
 on:
   release:
     types: [published]
@@ -37,8 +41,11 @@ jobs:
       uses: actions/upload-artifact@v4.3.3
       with:
         name: helloworld-python-module
-        path: /dist/*
+        path: dist/*
         if-no-files-found: error
         error: Artifact Upload Failed
         overwrite: true
-              
+    - name: Run locally 
+      run: |
+        pip install dist/$APP_NAME-$APP_VERSION.tar.gz
+        python -m hello   
