@@ -33,4 +33,12 @@ jobs:
     - name: Build package
       run: python -m build
 
-
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.3
+      with:
+        name: helloworld-python-module
+        path: /dist/*
+        if-no-files-found: error
+        error: Artifact Upload Failed
+        overwrite: true
+              
