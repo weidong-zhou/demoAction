@@ -77,7 +77,10 @@ jobs:
         with:
           name: helloworld-python-module
           path: dist/*
-          if-no-files-found: error
+
+      - name: lsR
+        run: |
+          ls -R
               
       - name: Push to Release
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
