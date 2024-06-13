@@ -16,7 +16,8 @@ on:
   workflow_dispatch : {}
 
 permissions:
-  contents: read
+  contents: write
+  # need write to push to release artifact 
 
 jobs:
   deploy:
@@ -37,6 +38,7 @@ jobs:
 
     - name: Run locally 
       run: |
+        echo "Run locally"
         pip install dist/$APP_NAME-$APP_VERSION.tar.gz
         echo ==========================================
         python -m hello 
@@ -63,8 +65,9 @@ jobs:
       run: |
         docker build . -t hello  --build-arg APP_VERSION=$APP_VERSION
 
-    - name: Docker RUN
+    - name: Run Docker
       run: |
+        echo "Run Docker"
         echo ==========================================
         docker run -t hello
         echo ==========================================
