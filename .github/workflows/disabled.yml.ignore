@@ -1,0 +1,21 @@
+    - name: Save Docker image
+      run: |
+        docker save -o ${{ github.sha }} ${APP_NAME}:${{ github.sha }}
+  
+    - name: Cache DB
+      uses: actions/cache@v3
+      with:
+        path: matcher.db
+        key: matcher.db
+        
+    - name: Run Clair V4
+      uses: quay/clair-action@main
+      with:
+        image-path: ${{ github.sha }}
+        format: sarif
+        output: clair_results.sarif
+
+    - name: Upload sarif
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: clair_results.sarif
