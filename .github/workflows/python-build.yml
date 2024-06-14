@@ -4,6 +4,7 @@ name: Python Build and Test
 env:
   APP_NAME: foo
   APP_VERSION: bar
+  REGISTRY: ghcr.io
 
 # simple git flow for single developer with linear development  
 # release with tag = pyproject.toml versio = $APP_VERSION
@@ -18,6 +19,10 @@ on:
 permissions:
   contents: write
   # need write to push to release artifact 
+  packages: write
+  attestations: write
+  id-token: write
+  # for ghrc 
 
 jobs:
   BuildAndTest:
@@ -96,6 +101,16 @@ jobs:
         path: dist/*
         if-no-files-found: error
         overwrite: true
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Push
+      run: |
+        docker image tag ${{ env.APP_NAME }}:${{ github.sha }} ${{env.REGISTRY}}/${GH_USERNAME}/${{ env.APP_NAME }}:${{ github.sha }}
 
   # this is not part of requirement
   Upload_to_release:
