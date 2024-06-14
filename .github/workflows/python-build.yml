@@ -77,13 +77,13 @@ jobs:
       run: |
         echo "Run Docker"
         echo ==========================================
-        docker run -t ${{ env.APP_NAME }}:${{ github.sha }}
+        docker run ${{ env.APP_NAME }}:${{ github.sha }}
         echo ==========================================
 
     - name: Test Docker 
       run: |
         echo "Test Docker"
-        docker run -t ${{ env.APP_NAME }}:${{ github.sha }} > docker.test.out
+        docker run ${{ env.APP_NAME }}:${{ github.sha }} > docker.test.out
         wc docker.test.out expected.out
         diff docker.test.out expected.out
 
