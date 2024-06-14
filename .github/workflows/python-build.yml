@@ -16,8 +16,7 @@ on:
   workflow_dispatch : {}
 
 permissions:
-  contents: read
-
+  contents: write
   # need write to push to release artifact 
 
 jobs:
