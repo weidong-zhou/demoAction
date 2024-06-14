@@ -79,3 +79,4 @@ jobs:
   Upload_to_release:
     uses: "./.github/workflows/python-release.yml"
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    needs : BuildAndTest
