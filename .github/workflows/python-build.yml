@@ -36,6 +36,9 @@ jobs:
     - name: Build package
       run: python -m build
 
+    - name: Setup Test
+      run: echo "Hello World" > expected.out
+
     - name: Run locally 
       run: |
         echo "Run locally"
@@ -43,6 +46,12 @@ jobs:
         echo ==========================================
         python -m ${{ env.APP_NAME }} 
         echo ==========================================
+
+    - name: Test locally 
+      run: |
+        echo "Test locally"
+        python -m ${{ env.APP_NAME }} > local.test.out
+        diff local.test.out expected.out
 
     - name: Build Docker
       run: |
@@ -65,6 +74,12 @@ jobs:
         docker run -t ${{ env.APP_NAME }}:${{ github.sha }}
         echo ==========================================
 
+    - name: Test Docker 
+      run: |
+        echo "Test Docker"
+        docker run -t ${{ env.APP_NAME }}:${{ github.sha }} > docker.test.out
+        diff docker.test.out expected.out
+
     - name: Upload Build Artifact
       # if push to main or create release
       if: ${{ github.ref != 'refs/heads/main' }} || ${{ github.event_name == 'workflow_dispatch'}} || ${{ startsWith(github.ref, 'refs/tags/') }}
@@ -77,6 +92,6 @@ jobs:
 
   # this is not part of requirement
   Upload_to_release:
-    uses: "./.github/workflows/python-release.yml"
+    uses: "./.github/workflows/artifact-release.yml"
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     needs : BuildAndTest
