@@ -64,7 +64,7 @@ jobs:
       run: |
         echo "Run Docker"
         echo ==========================================
-        docker run -t hello
+        docker run -t ${{ env.APP_NAME }}:${{ github.sha }}
         echo ==========================================
 
     - name: Upload Build Artifact
