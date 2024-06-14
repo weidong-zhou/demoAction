@@ -1,19 +1,25 @@
 
 name: Upload Release
 
-# simple git flow for single developer with linear development  
-# release with tag = pyproject.toml versio = $APP_VERSION
+# simple reuseable workflow to unpack and upload all artifact in dist/
 on:
-  workflow_run:
-    workflows: ["Python Build and Test"]
-    types: 
-      - completed
-
-  workflow_dispatch : {}
-
+  workflow_call:
+    inputs:
+      # fixed path for now
+      artifact-path:
+        required: false
+        type: string
+        default: dist/
+      # all artifact for now
+      artifact-name:
+        required: false
+        type: string
+      merge-multiple:
+        required: false
+        type: boolean
+        default: true        
 permissions:
   contents: write
-
   # need write to push to release artifact 
 
 jobs:
@@ -21,21 +27,19 @@ jobs:
   # this is not part of requirement
   Upload_to_release:
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     steps:
-      
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.7
         with:
           path: dist/
-          merge-multiple: true
+          merge-multiple: ${{ inputs.merge-multiple }}
 
       - name: lsR
         run: |
           ls -R
               
       - name: Push to Release
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+
         uses: softprops/action-gh-release@v2.0.5
         with:        
           files: dist/*
