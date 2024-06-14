@@ -84,7 +84,7 @@ jobs:
       run: |
         echo "Test Docker"
         docker run -t ${{ env.APP_NAME }}:${{ github.sha }} > docker.test.out
-        wc -l docker.test.out expected.out
+        wc docker.test.out expected.out
         diff docker.test.out expected.out
 
     - name: Upload Build Artifact
