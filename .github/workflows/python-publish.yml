@@ -54,6 +54,18 @@ jobs:
       run: |
         docker save -o ${{ github.sha }} ${APP_NAME}:${{ github.sha }}
 
+    - name: Run Clair V4 update
+      uses: quay/clair-action@allow-update
+      with:
+        db-file: matcher.db
+        mode: update
+
+    - name: Cache DB
+      uses: actions/cache@v3
+      with:
+        path: matcher.db
+        key: matcher.db
+        
     - name: Run Clair V4
       uses: quay/clair-action@main
       with:
