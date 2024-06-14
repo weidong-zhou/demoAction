@@ -111,7 +111,7 @@ jobs:
     - name: Push
       run: |
         docker image tag ${{ env.APP_NAME }}:${{ github.sha }} ${{env.REGISTRY}}/${GH_USERNAME}/${{ env.APP_NAME }}:${{ github.sha }}
-
+        docker push ${{env.REGISTRY}}/${GH_USERNAME}/${{ env.APP_NAME }}:${{ github.sha }}
   # this is not part of requirement
   Upload_to_release:
     uses: "./.github/workflows/artifact-release.yml"
