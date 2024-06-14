@@ -4,9 +4,11 @@ name: Upload Release
 # simple git flow for single developer with linear development  
 # release with tag = pyproject.toml versio = $APP_VERSION
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_run:
+    workflows: ["Python Build and Test"]
+    types: 
+      - completed
+
   workflow_dispatch : {}
 
 permissions:
@@ -19,8 +21,9 @@ jobs:
   # this is not part of requirement
   Upload_to_release:
     runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     steps:
-    # if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.7
         with:
