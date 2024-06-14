@@ -41,19 +41,19 @@ jobs:
     - name: Run locally 
       run: |
         echo "Run locally"
-        pip install dist/$APP_NAME-$APP_VERSION.tar.gz
+        pip install dist/${{ env.APP_NAME }}-${{ env.APP_VERSION }}.tar.gz
         echo ==========================================
-        python -m ${APP_NAME} 
+        python -m ${{ env.APP_NAME }} 
         echo ==========================================
 
     - name: Build Docker
       run: |
-        docker build . -t ${APP_NAME}:${{ github.sha }}  --build-arg APP_VERSION=$APP_VERSION
+        docker build . -t  ${{ env.APP_NAME }}:${{ github.sha }}  --build-arg APP_VERSION=$APP_VERSION
        
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.20.0
       with:
-        image-ref: ${APP_NAME}:${{ github.sha }} 
+        image-ref: ${{ env.APP_NAME }}:${{ github.sha }} 
         format: 'table'
         exit-code: '1'
         ignore-unfixed: true
