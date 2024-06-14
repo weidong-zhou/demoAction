@@ -1,5 +1,5 @@
 
-name: Python CI
+name: Python Build and Test
 
 env:
   APP_NAME: hello
@@ -76,29 +76,3 @@ jobs:
         path: dist/*
         if-no-files-found: error
         overwrite: true
-
-
-              
-  # this is not part of requirement
-  Upload_to_release:
-    runs-on: ubuntu-latest
-    needs: BuildAndTest
-
-    steps:
-      - name: Download a Build Artifact
-        if: ${{ github.ref != 'refs/heads/main' }} || ${{ github.event_name == 'workflow_dispatch'}} || ${{ startsWith(github.ref, 'refs/tags/') }}
-        uses: actions/download-artifact@v4.1.7
-        with:
-          path: dist/
-          merge-multiple: true
-
-      - name: lsR
-        run: |
-          ls -R
-              
-      - name: Push to Release
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        uses: softprops/action-gh-release@v2.0.5
-        with:        
-          files: dist/*
-          fail_on_unmatched_files: true
