@@ -42,7 +42,7 @@ jobs:
     - name: Unit Test with pytest
       run: |
         pip install pytest 
-        cd src; pytest 
+        (cd src; pytest )
 
     - name: Build package
       run: python -m build

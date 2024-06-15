@@ -1,10 +1,7 @@
-import sys
-import pytest
-
+import sys, pytest
+from hello import hello
 
 def test_hello(capsys) :
-    from hello import hello
-
     hello=hello()
     hello.say_hello()
     out, err = capsys.readouterr()
