@@ -39,11 +39,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install build 
 
-    - name: Unit Test with pytest
-      run: |
-        pip install pytest 
-        (cd src; pytest )
-
     - name: Build package
       run: python -m build
 
@@ -52,6 +47,11 @@ jobs:
         echo APP_NAME=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["name"])') >> $GITHUB_ENV
         echo APP_VERSION=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])') >> $GITHUB_ENV
 
+    - name: Unit Test with pytest
+      run: |
+        pip install pytest 
+        (cd src; pytest )
+        
     - name: Setup Test
       run: echo "Hello World" > expected.out
 
