@@ -39,6 +39,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install build 
 
+    - name: Unit Test with pytest
+      run: |
+        pip install pytest 
+        cd src; pytest 
+
     - name: Build package
       run: python -m build
 
@@ -57,6 +62,8 @@ jobs:
         echo ==========================================
         python -m ${{ env.APP_NAME }} 
         echo ==========================================
+
+
 
     - name: Test locally 
       run: |
