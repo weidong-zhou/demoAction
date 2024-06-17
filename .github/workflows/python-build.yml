@@ -148,7 +148,6 @@ jobs:
         echo "image=$image" >> $GITHUB_OUTPUT
         echo "app=${{ env.APP_NAME }}" >> $GITHUB_OUTPUT
 
-
     # Upload to release, reusable workflow. 
     - name: Upload
       if: ${{ startsWith(github.ref, 'refs/tags/v') }}
@@ -159,10 +158,10 @@ jobs:
       image: ${{ steps.ecr_push.outputs.image}}
       app: ${{ steps.ecr_push.outputs.app}}
 
-
   Deploy_Staging:
     needs : BuildAndTest
     uses: "./.github/workflows/deploy.yml"
+    # if: ${{ startsWith(github.ref, 'refs/tags/deploy-v') }} # deply with tag deploy-v*** 
     secrets: inherit
     with: 
       env : 'staging'
@@ -172,12 +171,9 @@ jobs:
       service: 'hello_svc'
       pods: 0 
 
-    # if: ${{ startsWith(github.ref, 'refs/tags/deploy-v') }} # deply with tag deploy-v*** 
-
   # Deploy_Production:
   #   needs : Deploy_Staging
   #   uses: "./.github/workflows/deploy.yml"
   #   with: 
   #     env : production
   #   if: ${{ startsWith(github.ref, 'refs/tags/deploy-v') }} # deply with tag deploy-v***     
-
