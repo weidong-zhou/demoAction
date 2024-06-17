@@ -8,12 +8,27 @@ on:
       env:
         required: true
         type: string
-
+      cluster:
+        required: true
+        type: string
+      service:
+        required: true
+        type: string
+      app:
+        required: true
+        type: string
+      image:
+        required: true
+        type: string
+      pods:
+        required: true
+        type: number
 jobs:
   # this is not part of requirement
   Deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -26,3 +41,19 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
         with:
           mask-password: 'false'
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ inputs.app }}
+          image: ${{ inputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ inputs.service }}
+          cluster: ${{ inputs.cluster }}
+          wait-for-service-stability: true

@@ -4,6 +4,9 @@ name: Python Build and Test
 env:
   APP_NAME: foo
   APP_VERSION: bar
+  GHCR_REGISTRY: e.g, ghcr.io/${{ github.actor }}/${{ env.APP_NAME }}
+  ECR_REGISTRY: e.g, 355097843888.dkr.ecr.ap-southeast-1.amazonaws.com/hello
+  # placeholder for readability, override later 
 
 # simple git flow for single developer with linear development  
 # release with tag = pyproject.toml versio = $APP_VERSION
@@ -45,6 +48,8 @@ jobs:
       run: | 
         echo APP_NAME=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["name"])') >> $GITHUB_ENV
         echo APP_VERSION=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])') >> $GITHUB_ENV
+        echo GHCR_REGISTRY=ghcr.io/${{ github.actor }}/${{ env.APP_NAME }} >> $GITHUB_ENV
+        echo ECR_REGISTRY=355097843888.dkr.ecr.ap-southeast-1.amazonaws.com/${{ env.APP_NAME }} >> $GITHUB_ENV
 
     - name: Setup Test
       run: echo "Hello World" > expected.out
@@ -128,29 +133,39 @@ jobs:
 
     - name: Push to ghcr.io
       run: |
-        REGISTRY=ghcr.io
-        IMAGE=$REGISTRY/${{ github.actor }}/${{ env.APP_NAME }}:${{ github.sha }}
-        docker image tag ${{ env.APP_NAME }}:${{ github.sha }} $IMAGE
+        docker image tag ${{ env.APP_NAME }}:${{ github.sha }} ${{ env.GHCR_REGISTRY }}:${{ github.sha }}
         docker push $IMAGE
 
     - name: Push to ECR
+      id: ecr_push
       run: |
-        REGISTRY=355097843888.dkr.ecr.ap-southeast-1.amazonaws.com/hello
-        IMAGE=$REGISTRY:${{ github.sha }}
-        docker image tag ${{ env.APP_NAME }}:${{ github.sha }} $IMAGE
+        docker image tag ${{ env.APP_NAME }}:${{ github.sha }} ${{ env.ECR_REGISTRY }}:${{ github.sha }}
         docker push $IMAGE
+        echo "image=${{ env.ECR_REGISTRY }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+        echo "app=${{ env.APP_NAME }}" >> $GITHUB_OUTPUT
+
 
   # Upload to release, reusable workflow. 
     - name: Upload
       if: ${{ startsWith(github.ref, 'refs/tags/v') }}
       uses: "./.github/workflows/artifact-release.yml"
+    outputs:
+      image: ${{ steps.ecr_push.outputs.image}}
+      app: ${{ steps.ecr_push.outputs.app}}
+
 
   Deploy_Staging:
     needs : BuildAndTest
     uses: "./.github/workflows/deploy.yml"
     with: 
       env : staging
-    if: ${{ startsWith(github.ref, 'refs/tags/deploy-v') }} # deply with tag deploy-v*** 
+      app : ${{ needs.BuildAndTest.outputs.app }}
+      image : ${{ needs.BuildAndTest.outputs.image  }}
+      cluster: staging
+      service: hello_svc
+      pods: 0 
+
+    # if: ${{ startsWith(github.ref, 'refs/tags/deploy-v') }} # deply with tag deploy-v*** 
 
   # Deploy_Production:
   #   needs : Deploy_Staging
