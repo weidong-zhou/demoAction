@@ -136,13 +136,13 @@ jobs:
     - name: Push to ghcr.io
       run: |
         docker image tag ${{ env.APP_NAME }}:${{ github.sha }} ${{ env.GHCR_REGISTRY }}:${{ github.sha }}
-        docker push $IMAGE
+        docker push $image
 
     - name: Push to ECR
       id: ecr_push
       run: |
         docker image tag ${{ env.APP_NAME }}:${{ github.sha }} ${{ env.ECR_REGISTRY }}:${{ github.sha }}
-        docker push $IMAGE
+        docker push $image
         echo "image=${{ env.ECR_REGISTRY }}:${{ github.sha }}" >> $GITHUB_OUTPUT
         echo "app=${{ env.APP_NAME }}" >> $GITHUB_OUTPUT
 
