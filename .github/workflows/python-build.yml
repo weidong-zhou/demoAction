@@ -4,7 +4,7 @@ name: Python Build and Test
 env:
   APP_NAME: foo
   APP_VERSION: bar
-  GHCR_REGISTRY: e.g, ghcr.io/${{ github.actor }}/${{ env.APP_NAME }}
+  GHCR_REGISTRY: e.g, 'ghcr.io/hello'
   ECR_REGISTRY: e.g, 355097843888.dkr.ecr.ap-southeast-1.amazonaws.com/hello
   # placeholder for readability, override later 
 
