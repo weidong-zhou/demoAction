@@ -46,10 +46,12 @@ jobs:
 
     - name: project_name
       run: | 
-        echo APP_NAME=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["name"])') >> $GITHUB_ENV
-        echo APP_VERSION=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])') >> $GITHUB_ENV
-        echo GHCR_REGISTRY=ghcr.io/${{ github.actor }}/${{ env.APP_NAME }} >> $GITHUB_ENV
-        echo ECR_REGISTRY=355097843888.dkr.ecr.ap-southeast-1.amazonaws.com/${{ env.APP_NAME }} >> $GITHUB_ENV
+        APP_NAME=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["name"])')
+        APP_VERSION=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+        echo APP_NAME=$APP_NAME >> $GITHUB_ENV
+        echo APP_VERSION=$APP_VERSION >> $GITHUB_ENV
+        echo GHCR_REGISTRY=ghcr.io/${{ github.actor }}/$APP_NAME >> $GITHUB_ENV
+        echo ECR_REGISTRY=355097843888.dkr.ecr.ap-southeast-1.amazonaws.com/$APP_NAME >> $GITHUB_ENV
 
     - name: Setup Test
       run: echo "Hello World" > expected.out
