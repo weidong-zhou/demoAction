@@ -48,7 +48,7 @@ jobs:
       run: |
         APP_NAME=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["name"])')
         APP_VERSION=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
-        {echo "APP_NAME=$APP_NAME\n";
+        { echo -e  "APP_NAME=$APP_NAME\n";
         echo "APP_VERSION=$APP_VERSION";
         echo "GHCR_REGISTRY=ghcr.io/${{ github.actor }}/$APP_NAME";
         echo "ECR_REGISTRY=355097843888.dkr.ecr.ap-southeast-1.amazonaws.com/$APP_NAME" } >> "$GITHUB_ENV"
