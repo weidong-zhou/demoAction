@@ -23,6 +23,9 @@ on:
       pods:
         required: true
         type: number
+permissions:
+  contents: read
+
 jobs:
   # this is not part of requirement
   Deploy:

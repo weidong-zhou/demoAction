@@ -149,10 +149,12 @@ jobs:
         echo "app=${{ env.APP_NAME }}" >> $GITHUB_OUTPUT
 
 
-  # Upload to release, reusable workflow. 
+    # Upload to release, reusable workflow. 
     - name: Upload
       if: ${{ startsWith(github.ref, 'refs/tags/v') }}
       uses: "./.github/workflows/artifact-release.yml"
+
+    #output for passing to next job    
     outputs:
       image: ${{ steps.ecr_push.outputs.image}}
       app: ${{ steps.ecr_push.outputs.app}}
