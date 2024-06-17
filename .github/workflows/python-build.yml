@@ -158,11 +158,11 @@ jobs:
     needs : BuildAndTest
     uses: "./.github/workflows/deploy.yml"
     with: 
-      env : staging
+      env : 'staging'
       app : ${{ needs.BuildAndTest.outputs.app }}
       image : ${{ needs.BuildAndTest.outputs.image  }}
-      cluster: staging
-      service: hello_svc
+      cluster: 'staging'
+      service: 'hello_svc'
       pods: 0 
 
     # if: ${{ startsWith(github.ref, 'refs/tags/deploy-v') }} # deply with tag deploy-v*** 
