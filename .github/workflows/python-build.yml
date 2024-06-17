@@ -31,7 +31,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
     - name: Install dependencies
@@ -118,7 +118,8 @@ jobs:
         docker image tag ${{ env.APP_NAME }}:${{ github.sha }} ${{env.REGISTRY}}/${{ github.actor }}/${{ env.APP_NAME }}:${{ github.sha }}
         docker push ${{env.REGISTRY}}/${{ github.actor }}/${{ env.APP_NAME }}:${{ github.sha }}
   # this is not part of requirement
-  Upload_to_release:
-    uses: "./.github/workflows/artifact-release.yml"
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-    needs : BuildAndTest
+    - name: Upload
+      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      uses: "./.github/workflows/artifact-release.yml"
+
+#      needs : BuildAndTest
